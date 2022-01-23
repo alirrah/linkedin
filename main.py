@@ -60,7 +60,7 @@ def userPage(users, user):
         if number == 1:
             EditProfile(user)
         elif number == 2:
-            Follower(user)
+            Follower(users, user)
         elif number == 3:
             findSuggestion(users, user)
         elif number == 4:
@@ -76,7 +76,7 @@ def userPage(users, user):
 def findSuggestion(users, user):
 
     suggested = {}
-    priority = [0, 0, 0, 0, 0]
+    priority = [0, 0, 0, 0, 0, 0]
     os.system('cls')
     print(' -----------------------------Suggested for  Follow----------------------------- ')
     print('Give each item a score between 0 to 5 in order of priority : ')
@@ -85,6 +85,7 @@ def findSuggestion(users, user):
     priority[2] = int(input('Field : '))
     priority[3] = int(input('Workplace : '))
     priority[4] = int(input('Specialties : '))
+    priority[5] = int(input('level : '))
     for item in users:
         item['visited'] = False
         item['level'] = 0
@@ -152,7 +153,7 @@ def rate(priority, user, contact):
     for item in user['specialties']:
         if item in contact['specialties']:
             sep += 1
-    return priority[0] * (user['dateOfBirth'] == contact['dateOfBirth']) + priority[1] * (user['universityLocation'] == contact['universityLocation']) + priority[2] * (user['field'] == contact['field']) + priority[3] * (user['workplace'] == contact['workplace']) + priority[4] * sep
+    return priority[0] * (user['dateOfBirth'] == contact['dateOfBirth']) + priority[1] * (user['universityLocation'] == contact['universityLocation']) + priority[2] * (user['field'] == contact['field']) + priority[3] * (user['workplace'] == contact['workplace']) + priority[4] * sep + priority[5] * (5 - contact['level'])
 
 
 def EditProfile(user):
@@ -188,13 +189,32 @@ def EditProfile(user):
     os.system('pause')
 
 
-def Follower(user):
+def Follower(users, user):
 
     os.system('cls')
     print(' -----------------------------Followers----------------------------- ')
     for item in user['connectionId']:
         print(users[int(item) - 1]['name'])
-    os.system('pause')
+
+    while True:
+        do = input('Do you want to unfollow someone ? (Y/N) ')
+        if do == 'Y':
+            flage = True
+            name = input('Enter his/her name : ')
+            for id in user['connectionId']:
+                    if users[int(id) - 1]['name'] == name:
+                        user['connectionId'].remove(id)
+                        print('Successfully remove from your followers')
+                        flage = False
+            if flage:
+                print(
+                    'Error!!!', 'No user was found with this information.', sep='\n')
+                os.system('pause')
+        elif do == 'N':
+            break
+        else:
+            print('Error!!!', 'Invalid input', sep='\n')
+            os.system('pause')
 
 
 if __name__ == '__main__':
